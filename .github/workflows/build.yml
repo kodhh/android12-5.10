@@ -83,7 +83,6 @@ jobs:
         ../scripts/config --file .config -e NTFS3_FS
         ../scripts/config --file .config -e NTFS3_LZX_XPRESS
         ../scripts/config --file .config -e NTFS3_FS_POSIX_ACL
-        ../scripts/config --file .config -y NTFS3_FS
 
         grep "NTFS3" .config
 
@@ -101,5 +100,5 @@ jobs:
       with:
         name: kernel-build
         path: |
-          out/fs/ntfs3/ntfs3.ko
+          out/arch/arm64/boot/*
           out/.config
