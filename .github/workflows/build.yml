@@ -76,12 +76,15 @@ jobs:
         
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
-          CC=clang LD=ld.lld gki_defconfig \
-          CONFIG_NTFS3_FS=m CONFIG_NTFS3_64BIT_CLUSTER=n \
-          CONFIG_NTFS3_LZX_XPRESS=y CONFIG_NTFS3_FS_POSIX_ACL=y \
-          O=out
-        grep "NTFS3" out/.config
+          CC=clang LD=ld.lld gki_defconfig O=out
 
+        # 启用 NTFS3 配置
+        ./scripts/config --file .config -e NTFS3_FS
+        ./scripts/config --file .config -e NTFS3_LZX_XPRESS
+        ./scripts/config --file .config -e NTFS3_FS_POSIX_ACL
+        ./scripts/config --file .config -m NTFS3_FS
+
+        grep "NTFS3" out/.config
 
     - name: Build Kernel with Clang
       run: |
