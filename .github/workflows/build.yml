@@ -65,6 +65,9 @@ jobs:
         # 集成NTFS3
         sed -i '146a source "fs/ntfs3/Kconfig"' ${{ env.KERNEL_PATH }}/fs/Kconfig
         sed -i '102a obj-$(CONFIG_NTFS3_FS) += ntfs3/' ${{ env.KERNEL_PATH }}/fs/Makefile
+        grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Kconfig
+        grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Makefile
+
 
     - name: Configure Kernel
       run: |
@@ -77,6 +80,8 @@ jobs:
           CONFIG_NTFS3_FS=m CONFIG_NTFS3_64BIT_CLUSTER=n \
           CONFIG_NTFS3_LZX_XPRESS=y CONFIG_NTFS3_FS_POSIX_ACL=y \
           O=out
+        grep "ntfs3" out/.config
+
 
     - name: Build Kernel with Clang
       run: |
