@@ -78,6 +78,7 @@ jobs:
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
           CC=clang LD=ld.lld gki_defconfig O=out
 
+        cd out
         # 启用 NTFS3 配置
         ./scripts/config --file .config -e NTFS3_FS
         ./scripts/config --file .config -e NTFS3_LZX_XPRESS
