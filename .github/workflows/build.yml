@@ -64,13 +64,13 @@ jobs:
         
         # 安全地集成NTFS3
         if ! grep -q 'source "fs/ntfs3/Kconfig"' ${{ env.KERNEL_PATH }}/fs/Kconfig; then
-            echo 'source "fs/ntfs3/Kconfig"' >> ${{ env.KERNEL_PATH }}/fs/Kconfig
-        fi
-        
-        if ! grep -q 'CONFIG_NTFS3_FS' ${{ env.KERNEL_PATH }}/fs/Makefile; then
             # 找到最后一个endmenu前的合适位置
             line_num=$(grep -n "endmenu" ${{ env.KERNEL_PATH }}/fs/Kconfig | tail -1 | cut -d: -f1)
             sed -i "$((line_num-1))a source \"fs/ntfs3/Kconfig\"" ${{ env.KERNEL_PATH }}/fs/Kconfig
+        fi
+        
+        if ! grep -q 'CONFIG_NTFS3_FS' ${{ env.KERNEL_PATH }}/fs/Makefile; then
+            echo 'obj-$(CONFIG_NTFS3_FS) += ntfs3/' >> ${{ env.KERNEL_PATH }}/fs/Makefile
         fi
 
     - name: Configure Kernel
