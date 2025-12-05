@@ -1,56 +1,101 @@
-name: Build whyred Kernel with Clang
+name: Build ntfs3.ko
 
 on:
   push:
-    branches: [ backup ]
+    branches: [ main ]
   pull_request:
-    branches: [ backup ]
+    branches: [ main ]
 
 jobs:
   build:
-    # 根据项目需求选择 windows-latest 或 ubuntu-latest
-    runs-on: ubuntu-22.04  # 若在Windows上编译，通常需改为 windows-latest
+    runs-on: ubuntu-22.04
     env:
-      CLANG_PATH: /prebuilt/clang
-      GCC_PATH: /prebuilt/gcc
-      GCC32_PATH: /prebuilt/gcc32
+      WORKSPACE: /home/runner/work/kernel-build
+      CLANG_PATH: /home/runner/work/kernel-build/prebuilt/clang
+      GCC_PATH: /home/runner/work/kernel-build/prebuilt/gcc
+      GCC32_PATH: /home/runner/work/kernel-build/prebuilt/gcc32
+      KERNEL_PATH: /home/runner/work/kernel-build/kernel/common
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Install Clang and Dependencies
+    - name: Set up workspace
       run: |
-        # 在Ubuntu上安装Clang及编译依赖（示例命令，具体包名请根据你的WSL2内核需求调整）
+        mkdir -p ${{ env.WORKSPACE }}
+        cd ${{ env.WORKSPACE }}
+
+    - name: Install Dependencies
+      run: |
         sudo apt-get update
-        sudo apt-get install -y git flex lzop bison gperf build-essential zip curl zlib1g-dev libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip
-        sudo bash -c "mkdir /{build,prebuilt} && chown $(whoami):$(whoami) /{build,prebuilt}"
-        git clone --depth=1 -b 15.0 https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-vortex.git $CLANG_PATH
-        git clone --depth=1 -b 15.0 https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3.git $GCC_PATH
-        git clone --depth=1 -b master https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_arm_arm-eabi.git $GCC32_PATH
+        # 按功能分组安装
+        sudo apt-get install -y build-essential make gcc g++
+        sudo apt-get install -y flex bison libssl-dev bc libelf-dev
+        sudo apt-get install -y git curl unzip python3
 
-    - name: Configure Kernel (示例)
+    - name: Clone Toolchains and Kernel
       run: |
-        # 此处为示例配置命令，请替换为你的WSL2内核实际配置命令
-        # 例如：make ARCH=arm64 CC=clang defconfig
-        export PATH="$CLANG_PATH/bin:$GCC_PATH/bin:$GCC32_PATH/bin:$PATH"
-        export LD_LIBRARY_PATH="$CLANG_PATH/lib64:$LD_LIBRARY_PATH"
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- CC=clang LD=ld.lld vendor/whyred_fstab_defconfig O=out
+        cd ${{ env.WORKSPACE }}
+        
+        # 克隆工具链
+        git clone --depth=1 -b 15.0 \
+          https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-vortex.git \
+          ${{ env.CLANG_PATH }}
+        
+        git clone --depth=1 -b 15.0 \
+          https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3.git \
+          ${{ env.GCC_PATH }}
+        
+        git clone --depth=1 -b master \
+          https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_arm_arm-eabi.git \
+          ${{ env.GCC32_PATH }}
+        
+        # 克隆内核源码
+        git clone --depth=1 -b android12-5.10 \
+          https://android.googlesource.com/kernel/common \
+          ${{ env.KERNEL_PATH }}
+        
+        # 克隆NTFS3模块
+        git clone --depth=1 -b master \
+          https://github.com/kodhh/ntfs3-oot.git \
+          ${{ env.KERNEL_PATH }}/fs/ntfs3
+        
+        # 安全地集成NTFS3
+        if ! grep -q 'source "fs/ntfs3/Kconfig"' ${{ env.KERNEL_PATH }}/fs/Kconfig; then
+            echo 'source "fs/ntfs3/Kconfig"' >> ${{ env.KERNEL_PATH }}/fs/Kconfig
+        fi
+        
+        if ! grep -q 'CONFIG_NTFS3_FS' ${{ env.KERNEL_PATH }}/fs/Makefile; then
+            echo 'obj-$(CONFIG_NTFS3_FS) += ntfs3/' >> ${{ env.KERNEL_PATH }}/fs/Makefile
+        fi
+
+    - name: Configure Kernel
+      run: |
+        export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        
+        cd ${{ env.KERNEL_PATH }}
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
+          CC=clang LD=ld.lld gki_defconfig \
+          CONFIG_NTFS3_FS=m CONFIG_NTFS3_64BIT_CLUSTER=n \
+          CONFIG_NTFS3_LZX_XPRESS=y CONFIG_NTFS3_FS_POSIX_ACL=y \
+          O=out
 
     - name: Build Kernel with Clang
       run: |
-        # 此处为示例编译命令，请替换为你的WSL2内核实际编译命令
-        # 例如：make ARCH=arm64 CC=clang -j$(nproc)
-        export PATH="$CLANG_PATH/bin:$GCC_PATH/bin:$GCC32_PATH/bin:$PATH"
-        export LD_LIBRARY_PATH="$CLANG_PATH/lib64:$LD_LIBRARY_PATH"
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- CC=clang LD=ld.lld KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 13000) O=out -j$(nproc)
+        export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        
+        cd ${{ env.KERNEL_PATH }}
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
+          CC=clang LD=ld.lld O=out -j$(nproc)
 
-    # 可选：上传构建产物
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: kernel-build
-        path: out/arch/arm64/boot/Image.gz-dtb
+        path: |
+          ${{ env.KERNEL_PATH }}/out/fs/ntfs3/ntfs3.ko
+          ${{ env.KERNEL_PATH }}/out/.config
