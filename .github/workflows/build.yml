@@ -68,7 +68,9 @@ jobs:
         fi
         
         if ! grep -q 'CONFIG_NTFS3_FS' ${{ env.KERNEL_PATH }}/fs/Makefile; then
-            echo 'obj-$(CONFIG_NTFS3_FS) += ntfs3/' >> ${{ env.KERNEL_PATH }}/fs/Makefile
+            # 找到最后一个endmenu前的合适位置
+            line_num=$(grep -n "endmenu" ${{ env.KERNEL_PATH }}/fs/Kconfig | tail -1 | cut -d: -f1)
+            sed -i "$((line_num-1))a source \"fs/ntfs3/Kconfig\"" ${{ env.KERNEL_PATH }}/fs/Kconfig
         fi
 
     - name: Configure Kernel
