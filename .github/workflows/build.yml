@@ -80,10 +80,10 @@ jobs:
 
         cd out
         # 启用 NTFS3 配置
-        ./scripts/config --file .config -e NTFS3_FS
-        ./scripts/config --file .config -e NTFS3_LZX_XPRESS
-        ./scripts/config --file .config -e NTFS3_FS_POSIX_ACL
-        ./scripts/config --file .config -m NTFS3_FS
+        ../scripts/config --file .config -e NTFS3_FS
+        ../scripts/config --file .config -e NTFS3_LZX_XPRESS
+        ../scripts/config --file .config -e NTFS3_FS_POSIX_ACL
+        ../scripts/config --file .config -m NTFS3_FS
 
         grep "NTFS3" .config
 
