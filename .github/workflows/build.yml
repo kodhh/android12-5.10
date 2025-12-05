@@ -92,5 +92,5 @@ jobs:
       with:
         name: kernel-build
         path: |
-          ${{ env.KERNEL_PATH }}/out/fs/ntfs3/ntfs3.ko
-          ${{ env.KERNEL_PATH }}/out/.config
+          out/fs/ntfs3/ntfs3.ko
+          out/.config
