@@ -68,6 +68,9 @@ jobs:
         grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Kconfig
         grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Makefile
 
+        cd ${{ env.KERNEL_PATH }}
+        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+
 
     - name: Configure Kernel
       run: |
