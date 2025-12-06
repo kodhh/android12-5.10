@@ -100,5 +100,5 @@ jobs:
       with:
         name: kernel-build
         path: |
-          arch/arm64/boot/*
-          .config
+          ${{ env.KERNEL_PATH }}/out/arch/arm64/boot/*
+          ${{ env.KERNEL_PATH }}/out/.config
