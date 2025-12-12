@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       WORKSPACE: /home/runner/work/kernel-build
       CLANG_PATH: /home/runner/work/kernel-build/prebuilt/clang
@@ -96,6 +96,7 @@ jobs:
         echo "CONFIG_CIFS_DEBUG2=n" >> out/.config
         echo "CONFIG_LTO_CLANG=y" >> out/.config
         echo "CONFIG_LTO_CLANG_THIN=y" >> out/.config
+        sed 's/CONFIG_LTO_NONE=y/CONFIG_LTO=y/g' out/.config
 
     - name: Build Kernel with Clang
       run: |
