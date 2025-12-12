@@ -49,7 +49,7 @@ jobs:
           ${{ env.GCC_PATH }}
         
         git clone --depth=1 -b android12L-gsi \
-          git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 \
+          https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 \
           ${{ env.GCC32_PATH }}
         
         # 克隆内核源码
