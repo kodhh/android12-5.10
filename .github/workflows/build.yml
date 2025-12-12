@@ -83,23 +83,19 @@ jobs:
 
         cd out
         # 启用 NTFS3 配置
-        ../scripts/config --file .config -e NTFS3_FS
-        ../scripts/config --file .config -e NTFS3_LZX_XPRESS
-        ../scripts/config --file .config -e NTFS3_FS_POSIX_ACL
-        ../scripts/config --file .config -e NETWORK_FILESYSTEMS
-        ../scripts/config --file .config -e CIFS
-        ../scripts/config --file .config -d CIFS_STATS2
-        ../scripts/config --file .config -e CIFS_ALLOW_INSECURE_LEGACY
-        ../scripts/config --file .config -e CIFS_XATTR
-        ../scripts/config --file .config -e CIFS_POSIX
-        ../scripts/config --file .config -d CIFS_DEBUG
-        ../scripts/config --file .config -d CIFS_DEBUG2
-        ../scripts/config --file .config -e LTO_CLANG
-        ../scripts/config --file .config -e LTO_CLANG_THIN
-
-        grep "NTFS3" .config
-        grep "CIFS" .config
-        grep "LTO" .config
+        echo "CONFIG_NTFS3_FS=y" >> out/.config
+        echo "CONFIG_NTFS3_LZX_XPRESS=y" >> out/.config
+        echo "CONFIG_NTFS3_FS_POSIX_ACL=y" >> out/.config
+        echo "CONFIG_NETWORK_FILESYSTEMS=y" >> out/.config
+        echo "CONFIG_CIFS=y" >> out/.config
+        echo "CONFIG_CIFS_STATS2=n" >> out/.config
+        echo "CONFIG_CIFS_ALLOW_INSECURE_LEGACY=y" >> out/.config
+        echo "CONFIG_CIFS_XATTR=y" >> out/.config
+        echo "CONFIG_CIFS_POSIX=y" >> out/.config
+        echo "CONFIG_CIFS_DEBUG=n" >> out/.config
+        echo "CONFIG_CIFS_DEBUG2=n" >> out/.config
+        echo "CONFIG_LTO_CLANG=y" >> out/.config
+        echo "CONFIG_LTO_CLANG_THIN=y" >> out/.config
 
     - name: Build Kernel with Clang
       run: |
