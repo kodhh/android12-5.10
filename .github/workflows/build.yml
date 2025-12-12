@@ -53,7 +53,7 @@ jobs:
           ${{ env.GCC32_PATH }}
         
         # 克隆内核源码
-        git clone --depth=1 -b android12-5.10 \
+        git clone --depth=1 -b android12-5.10-2025-12 \
           https://android.googlesource.com/kernel/common \
           ${{ env.KERNEL_PATH }}
         
@@ -94,6 +94,8 @@ jobs:
         ../scripts/config --file .config -e CIFS_POSIX
         ../scripts/config --file .config -d CIFS_DEBUG
         ../scripts/config --file .config -d CIFS_DEBUG2
+        ../scripts/config --file .config -d LTO_CLANG
+        ../scripts/config --file .config -d LTO_CLANG_THIN
 
         grep "NTFS3" .config
 
