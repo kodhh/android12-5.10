@@ -142,7 +142,7 @@ jobs:
         cd ${{ env.KERNEL_PATH }}
         clang -v
         llvm-nm --help | head -n 1 | grep -qi llvm
-        llvn-ar --help | head -n 1 | grep -qi llvm
+        llvm-ar --help | head -n 1 | grep -qi llvm
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
           CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 O=out -j$(nproc)
 
