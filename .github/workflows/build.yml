@@ -69,7 +69,6 @@ jobs:
         grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Makefile
 
         cd ${{ env.KERNEL_PATH }}
-        curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget https://github.com/Starrykernel/kernel_xiaomi_veux/commit/a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
         patch -p1 < a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
 
