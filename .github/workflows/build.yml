@@ -75,7 +75,7 @@ jobs:
     - name: Configure Kernel
       run: |
         export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib:$LD_LIBRARY_PATH"
         
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
@@ -104,7 +104,7 @@ jobs:
     - name: Build Kernel with Clang
       run: |
         export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib:$LD_LIBRARY_PATH"
         export ABI_DEFINITION=android/abi_gki_aarch64.xml
         export TIDY_ABI=1
         export KMI_SYMBOL_LIST=android/abi_gki_aarch64
