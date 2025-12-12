@@ -44,11 +44,11 @@ jobs:
           https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-vortex.git \
           ${{ env.CLANG_PATH }}
         
-        git clone --depth=1 -b android-14.0.0_r0.140 \
+        git clone --depth=1 -b android12L-gsi \
           https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 \
           ${{ env.GCC_PATH }}
         
-        git clone --depth=1 -b android-14.0.0_r0.140 \
+        git clone --depth=1 -b android12L-gsi \
           git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 \
           ${{ env.GCC32_PATH }}
         
