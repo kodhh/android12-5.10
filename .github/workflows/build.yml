@@ -33,7 +33,7 @@ jobs:
         # 按功能分组安装
         sudo apt-get install -y build-essential make gcc g++
         sudo apt-get install -y flex bison libssl-dev bc libelf-dev
-        sudo apt-get install -y git curl unzip python3
+        sudo apt-get install -y wget patch git curl unzip python3
 
     - name: Clone Toolchains and Kernel
       run: |
@@ -56,7 +56,7 @@ jobs:
         git clone --depth=1 -b android12-5.10-2025-12 \
           https://android.googlesource.com/kernel/common \
           ${{ env.KERNEL_PATH }}
-        
+       
         # 克隆NTFS3模块
         git clone --depth=1 -b master \
           https://github.com/kodhh/ntfs3-oot.git \
@@ -70,7 +70,8 @@ jobs:
 
         cd ${{ env.KERNEL_PATH }}
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
-
+        wget https://github.com/Starrykernel/kernel_xiaomi_veux/commit/a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
+        patch -p1 < a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
 
     - name: Configure Kernel
       run: |
