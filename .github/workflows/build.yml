@@ -138,6 +138,7 @@ jobs:
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
           CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 O=out -j$(nproc)
+        cp .config upload_config
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
@@ -145,4 +146,4 @@ jobs:
         name: kernel-build
         path: |
           ${{ env.KERNEL_PATH }}/out/arch/arm64/boot/*
-          ${{ env.KERNEL_PATH }}/out/.config
+          ${{ env.KERNEL_PATH }}/out/upload_config
