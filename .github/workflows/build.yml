@@ -72,7 +72,7 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget https://github.com/Starrykernel/kernel_xiaomi_veux/commit/a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
         patch -p1 < a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
-        wget https://raw.githubusercontent.com/kodhh/android12-5.10/main/defconfig -P arch/arm64/config -O my_defconfig
+        wget https://raw.githubusercontent.com/kodhh/android12-5.10/main/defconfig -P arch/arm64/configs -O my_defconfig
 
     - name: Configure Kernel
       run: |
