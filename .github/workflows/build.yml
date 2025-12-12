@@ -72,6 +72,7 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
         wget https://github.com/Starrykernel/kernel_xiaomi_veux/commit/a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
         patch -p1 < a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
+        wget https://raw.githubusercontent.com/kodhh/android12-5.10/main/defconfig -P arch/arm64/config -0 mydefconfig
 
     - name: Configure Kernel
       run: |
@@ -80,7 +81,7 @@ jobs:
         
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
-          CC=clang LD=ld.lld gki_defconfig O=out
+          CC=clang LD=ld.lld mydefconfig O=out
 
         # 启用 NTFS3 配置
         echo "CONFIG_NTFS3_FS=y" >> out/.config
@@ -96,7 +97,6 @@ jobs:
         echo "CONFIG_CIFS_DEBUG2=n" >> out/.config
         echo "CONFIG_LTO_CLANG=y" >> out/.config
         echo "CONFIG_LTO_CLANG_THIN=y" >> out/.config
-        sed 's/CONFIG_LTO_NONE=y/CONFIG_LTO=y/g' out/.config
 
     - name: Build Kernel with Clang
       run: |
