@@ -98,6 +98,8 @@ jobs:
         ../scripts/config --file .config -d LTO_CLANG_THIN
 
         grep "NTFS3" .config
+        grep "CIFS" .config
+        grep "LTO" .config
 
     - name: Build Kernel with Clang
       run: |
