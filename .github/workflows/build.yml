@@ -41,7 +41,7 @@ jobs:
         
         # 克隆工具链
         git clone --depth=1 -b lineage-20.0 \
-          git@github.com:LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git \
+          https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git \
           ${{ env.CLANG_PATH }}
         
         git clone --depth=1 -b android12L-gsi \
