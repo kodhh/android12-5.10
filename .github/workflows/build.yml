@@ -40,8 +40,8 @@ jobs:
         cd ${{ env.WORKSPACE }}
         
         # 克隆工具链
-        git clone --depth=1 -b main \
-          https://github.com/KiTTYsh/android_prebuilts_clang_host_linux-x86_clang-r547379.git \
+        git clone --depth=1 -b lineage-20.0 \
+          git@github.com:LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git \
           ${{ env.CLANG_PATH }}
         
         git clone --depth=1 -b android12L-gsi \
@@ -68,14 +68,10 @@ jobs:
         grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Kconfig
         grep "ntfs3" ${{ env.KERNEL_PATH }}/fs/Makefile
 
-        cd ${{ env.KERNEL_PATH }}
-        wget https://github.com/Starrykernel/kernel_xiaomi_veux/commit/a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
-        patch -p1 < a3fb94d4c8c429e8661525ee57c1eca4217eebbe.patch
-
     - name: Configure Kernel
       run: |
         export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib:$LD_LIBRARY_PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
         
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
@@ -103,7 +99,7 @@ jobs:
     - name: Build Kernel with Clang
       run: |
         export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib:$LD_LIBRARY_PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
         export ABI_DEFINITION=android/abi_gki_aarch64.xml
         export TIDY_ABI=1
         export KMI_SYMBOL_LIST=android/abi_gki_aarch64
