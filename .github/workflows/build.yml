@@ -40,16 +40,16 @@ jobs:
         cd ${{ env.WORKSPACE }}
         
         # 克隆工具链
-        git clone --depth=1 -b 15.0 \
-          https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-vortex.git \
+        git clone --depth=1 -b android16-qpr2-release \
+          https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 \
           ${{ env.CLANG_PATH }}
         
-        git clone --depth=1 -b 15.0 \
-          https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-gnu-9.3.git \
+        git clone --depth=1 -b android-14.0.0_r0.140 \
+          https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 \
           ${{ env.GCC_PATH }}
         
-        git clone --depth=1 -b master \
-          https://github.com/crdroidandroid/android_prebuilts_gcc_linux-x86_arm_arm-eabi.git \
+        git clone --depth=1 -b android-14.0.0_r0.140 \
+          git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 \
           ${{ env.GCC32_PATH }}
         
         # 克隆内核源码
@@ -74,11 +74,11 @@ jobs:
 
     - name: Configure Kernel
       run: |
-        export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        export PATH="${{ env.CLANG_PATH }}/clang-r574158/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/clang-r574158/lib:$LD_LIBRARY_PATH"
         
         cd ${{ env.KERNEL_PATH }}
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
           CC=clang LD=ld.lld gki_defconfig O=out
 
         cd out
@@ -94,8 +94,8 @@ jobs:
         ../scripts/config --file .config -e CIFS_POSIX
         ../scripts/config --file .config -d CIFS_DEBUG
         ../scripts/config --file .config -d CIFS_DEBUG2
-        ../scripts/config --file .config -d LTO_CLANG
-        ../scripts/config --file .config -d LTO_CLANG_THIN
+        ../scripts/config --file .config -e LTO_CLANG
+        ../scripts/config --file .config -e LTO_CLANG_THIN
 
         grep "NTFS3" .config
         grep "CIFS" .config
@@ -103,8 +103,8 @@ jobs:
 
     - name: Build Kernel with Clang
       run: |
-        export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
-        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
+        export PATH="${{ env.CLANG_PATH }}/clang-r574158/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
+        export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib:$LD_LIBRARY_PATH"
         export ABI_DEFINITION=android/abi_gki_aarch64.xml
         export TIDY_ABI=1
         export KMI_SYMBOL_LIST=android/abi_gki_aarch64
@@ -140,10 +140,7 @@ jobs:
         "
 
         cd ${{ env.KERNEL_PATH }}
-        clang -v
-        llvm-nm --help | head -n 1 | grep -qi llvm
-        llvm-ar --help | head -n 1 | grep -qi llvm
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
           CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 O=out -j$(nproc)
 
     - name: Upload Build Artifacts
