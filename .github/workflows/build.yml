@@ -86,6 +86,14 @@ jobs:
         ../scripts/config --file .config -e NTFS3_FS
         ../scripts/config --file .config -e NTFS3_LZX_XPRESS
         ../scripts/config --file .config -e NTFS3_FS_POSIX_ACL
+        ../scripts/config --file .config -e NETWORK_FILESYSTEMS
+        ../scripts/config --file .config -e CIFS
+        ../scripts/config --file .config -d CIFS_STATS2
+        ../scripts/config --file .config -e CIFS_ALLOW_INSECURE_LEGACY
+        ../scripts/config --file .config -e CIFS_XATTR
+        ../scripts/config --file .config -e CIFS_POSIX
+        ../scripts/config --file .config -d CIFS_DEBUG
+        ../scripts/config --file .config -d CIFS_DEBUG2
 
         grep "NTFS3" .config
 
