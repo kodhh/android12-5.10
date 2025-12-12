@@ -139,7 +139,7 @@ jobs:
 
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux- CROSS_COMPILE_COMPAT=arm-eabi- \
-          CC=clang LD=ld.lld LLVM=1 O=out -j$(nproc)
+          CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 O=out -j$(nproc)
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
