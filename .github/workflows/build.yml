@@ -40,8 +40,8 @@ jobs:
         cd ${{ env.WORKSPACE }}
         
         # 克隆工具链
-        git clone --depth=1 -b 15.0 \
-          https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-vortex.git \
+        git clone --depth=1 -b main \
+          https://github.com/KiTTYsh/android_prebuilts_clang_host_linux-x86_clang-r547379.git \
           ${{ env.CLANG_PATH }}
         
         git clone --depth=1 -b android12L-gsi \
