@@ -58,7 +58,7 @@ jobs:
           ${{ env.KERNEL_PATH }}
        
         git clone --depth=1 -b android-12.1.0_r0.40 \
-          ttps://android.googlesource.com/kernel/build \
+          https://android.googlesource.com/kernel/build \
           ${{ env.KERNEL_PATH }}\build
 
         # 克隆NTFS3模块
@@ -79,7 +79,7 @@ jobs:
         
         cd ${{ env.KERNEL_PATH }}
         export CROSS_COMPILE=aarch64-linux-android-
-        CROSS_COMPILE_COMPAT=arm-linux-androideabi-
+        export CROSS_COMPILE_COMPAT=arm-linux-androideabi-
         LTO=thin BUILD_CONFIG=build.config.gki.aarch64 build/build.sh
 
         # 启用 NTFS3 配置
