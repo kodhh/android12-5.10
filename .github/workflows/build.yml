@@ -33,7 +33,7 @@ jobs:
         # 按功能分组安装
         sudo apt-get install -y build-essential make gcc g++
         sudo apt-get install -y flex bison libssl-dev bc libelf-dev
-        sudo apt-get install -y wget patch git curl unzip python3
+        sudo apt-get install -y wget patch git curl unzip python3 nproc readlink rm
 
     - name: Clone Toolchains and Kernel
       run: |
