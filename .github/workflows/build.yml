@@ -81,7 +81,7 @@ jobs:
         export CROSS_COMPILE=aarch64-linux-android-
         export CROSS_COMPILE_COMPAT=arm-linux-androideabi-
         export ROOT_DIR=.
-        export KERNEL_DIR=common
+        export KERNEL_DIR=.
         LTO=thin BUILD_CONFIG=build.config.gki.aarch64 build/build.sh OUT_DIR=out
 
         # 启用 NTFS3 配置
