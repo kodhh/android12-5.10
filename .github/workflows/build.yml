@@ -57,9 +57,9 @@ jobs:
           https://android.googlesource.com/kernel/common \
           ${{ env.KERNEL_PATH }}
        
-       git clone --depth=1 -b android-12.1.0_r0.40 \
-git clone https://android.googlesource.com/kernel/build \
-${{ env.KERNEL_PATH }}\build
+        git clone --depth=1 -b android-12.1.0_r0.40 \
+          ttps://android.googlesource.com/kernel/build \
+          ${{ env.KERNEL_PATH }}\build
 
         # 克隆NTFS3模块
         git clone --depth=1 -b master \
@@ -78,8 +78,9 @@ ${{ env.KERNEL_PATH }}\build
         export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
         
         cd ${{ env.KERNEL_PATH }}
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
-          CC=clang LD=ld.lld gki_defconfig O=out
+        export CROSS_COMPILE=aarch64-linux-android-
+        CROSS_COMPILE_COMPAT=arm-linux-androideabi-
+        LTO=thin BUILD_CONFIG=build.config.gki.aarch64 build/build.sh
 
         # 启用 NTFS3 配置
         echo "CONFIG_NTFS3_FS=y" >> out/.config
@@ -104,39 +105,6 @@ ${{ env.KERNEL_PATH }}\build
       run: |
         export PATH="${{ env.CLANG_PATH }}/bin:${{ env.GCC_PATH }}/bin:${{ env.GCC32_PATH }}/bin:$PATH"
         export LD_LIBRARY_PATH="${{ env.CLANG_PATH }}/lib64:$LD_LIBRARY_PATH"
-        export ABI_DEFINITION=android/abi_gki_aarch64.xml
-        export TIDY_ABI=1
-        export KMI_SYMBOL_LIST=android/abi_gki_aarch64
-        export ADDITIONAL_KMI_SYMBOL_LISTS="
-        android/abi_gki_aarch64_type_visibility
-        android/abi_gki_aarch64_arg
-        android/abi_gki_aarch64_core
-        android/abi_gki_aarch64_db845c
-        android/abi_gki_aarch64_exynos
-        android/abi_gki_aarch64_exynosauto
-        android/abi_gki_aarch64_fips140
-        android/abi_gki_aarch64_galaxy
-        android/abi_gki_aarch64_generic
-        android/abi_gki_aarch64_hikey960
-        android/abi_gki_aarch64_honor
-        android/abi_gki_aarch64_imx
-        android/abi_gki_aarch64_lenovo
-        android/abi_gki_aarch64_moto
-        android/abi_gki_aarch64_mtk
-        android/abi_gki_aarch64_nothing
-        android/abi_gki_aarch64_oplus
-        android/abi_gki_aarch64_qcom
-        android/abi_gki_aarch64_rockchip
-        android/abi_gki_aarch64_sunmi
-        android/abi_gki_aarch64_unisoc
-        android/abi_gki_aarch64_virtual_device
-        android/abi_gki_aarch64_vivo
-        android/abi_gki_aarch64_xiaomi
-        android/abi_gki_aarch64_zebra
-        android/abi_gki_aarch64_asus
-        android/abi_gki_aarch64_transsion
-        android/abi_gki_aarch64_tuxera
-        "
 
         cd ${{ env.KERNEL_PATH }}
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
