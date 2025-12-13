@@ -57,6 +57,10 @@ jobs:
           https://android.googlesource.com/kernel/common \
           ${{ env.KERNEL_PATH }}
        
+       git clone --depth=1 -b android-12.1.0_r0.40 \
+git clone https://android.googlesource.com/kernel/build \
+${{ env.KERNEL_PATH }}\build
+
         # 克隆NTFS3模块
         git clone --depth=1 -b master \
           https://github.com/kodhh/ntfs3-oot.git \
